@@ -29,7 +29,7 @@ RUN apk add --no-cache --virtual .build-tools git g++ build-base linux-headers c
     install -d /usr/include/date/ && \
     install -m644 libcron/externals/date/include/date/* /usr/include/date/ && \
     cd .. && \
-    git clone https://github.com/ToruNiina/toml11 --depth=1 && \
+    git clone https://github.com/ToruNiina/toml11 --branch v3.7.1 --depth=1 && \
     cd toml11 && \
     cmake -DCMAKE_CXX_STANDARD=11 . && \
     make install -j $THREADS && \
