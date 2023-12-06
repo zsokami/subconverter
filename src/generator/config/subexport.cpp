@@ -107,7 +107,7 @@ bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &
     std::string target, ret_real_rule;
     static const std::string groupid_regex = R"(^!!(?:GROUPID|INSERT)=([\d\-+!,]+)(?:!!(.*))?$)", group_regex = R"(^!!(?:GROUP)=(.+?)(?:!!(.*))?$)";
     static const std::string type_regex = R"(^!!(?:TYPE)=(.+?)(?:!!(.*))?$)", port_regex = R"(^!!(?:PORT)=(.+?)(?:!!(.*))?$)", server_regex = R"(^!!(?:SERVER)=(.+?)(?:!!(.*))?$)";
-    static const string_array types = {"", "SS", "SSR", "VMESS", "TROJAN", "SNELL", "HTTP", "HTTPS", "SOCKS5","VLESS","HYSTERIA"};
+    static const string_array types = {"", "SS", "SSR", "VMESS", "TROJAN", "SNELL", "HTTP", "HTTPS", "SOCKS5","VLESS","HYSTERIA","HYSTERIA2"};
     if (startsWith(rule, "!!GROUP=")) {
         regGetMatch(rule, group_regex, 3, 0, &target, &ret_real_rule);
         real_rule = ret_real_rule;
@@ -351,6 +351,28 @@ void proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGr
                     singleproxy["alpn"].push_back(x.Alpn);
                 if (!x.OBFSParam.empty())
                     singleproxy["obfs"] = x.OBFSParam;
+                break;
+            case ProxyType::Hysteria2:
+                singleproxy["type"] = "hysteria2";
+                singleproxy["password"] = x.Password;
+                if (!x.UpMbps.empty())
+                    singleproxy["up"] = x.UpMbps;
+                if (!x.DownMbps.empty())
+                    singleproxy["down"] = x.DownMbps;
+                if (!tfo.is_undef())
+                    singleproxy["fast-open"] = tfo.get();
+                if (!x.Host.empty())
+                    singleproxy["sni"] = x.Host;
+                if (!scv.is_undef())
+                    singleproxy["skip-cert-verify"] = scv.get();
+                if (x.Insecure == "1")
+                    singleproxy["skip-cert-verify"] = true;
+                if (!x.Alpn.empty())
+                    singleproxy["alpn"].push_back(x.Alpn);
+                if (!x.OBFSParam.empty())
+                    singleproxy["obfs"] = x.OBFSParam;
+                if (!x.OBFSPassword.empty())
+                    singleproxy["obfs-password"] = x.OBFSPassword;
                 break;
             case ProxyType::VLESS:
                 singleproxy["type"] = "vless";
