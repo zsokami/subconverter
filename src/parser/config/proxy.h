@@ -111,6 +111,7 @@ struct Proxy
     String ShortId;
 
     String OBFSPassword;
+    uint16_t CWND;
 
 };
 
