@@ -203,9 +203,8 @@ void explodeHysteria(std::string hysteria, Proxy &node)
 
 void explodeHysteria2(std::string hysteria2, Proxy &node)
 {
-    printf("explodeHysteria2\n");
-    hysteria2 = urlSafeBase64Decode(regReplace(hysteria2, "(hysteria2|hy2)://", "hysteria2://"));
-    if(regMatch(hysteria2, "hysteria2://(.*?)@(.*?)[:](.*)"))
+    hysteria2 = regReplace(hysteria2, "(hysteria2|hy2)://", "hysteria2://");
+    if(regMatch(hysteria2, "hysteria2://(.*?)[:](.*)"))
     {
         explodeStdHysteria2(hysteria2, node);
         return;
@@ -1354,7 +1353,7 @@ void explodeClash(Node yamlnode, std::vector<Proxy> &nodes)
 
             bool skipCertVerify;
             singleproxy["skip-cert-verify"] >> skipCertVerify;
-            if (skipCertVerify) {
+            if (skipCertVerify == true) {
                 insecure = "1";
             } else {
                 insecure = "0";
@@ -1479,21 +1478,15 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node)
     {
         password = getUrlArg(addition,"password");
         if(password.empty())
-          return;
-
-        if(strFind(hysteria2, ":"))
-        {
-            if(regGetMatch(hysteria2, R"(^(.*)[:](\d+)$)", 3, 0, &add, &port))
-              return;
-        }
-        else
-        {
-          port = getUrlArg(addition,"port");
-          if(port.empty())
             return;
 
-          add = hysteria2;
-        }
+        if(!strFind(hysteria2, ":"))
+            return;
+
+        if(regGetMatch(hysteria2, R"(^(.*)[:](\d+)$)", 3, 0, &add, &port))
+            return;
+
+        add = hysteria2;
     }
 
     insecure = getUrlArg(addition, "insecure");
