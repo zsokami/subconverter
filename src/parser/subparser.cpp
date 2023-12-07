@@ -2444,7 +2444,7 @@ void explode(const std::string &link, Proxy &node)
         explodeVless(link, node);
     else if(strFind(link, "hysteria://"))
         explodeHysteria(link, node);
-    else if(strFind(link, "hysteria2://")) || strFind(link, "hy2://"))
+    else if(strFind(link, "hysteria2://") || strFind(link, "hy2://"))
         explodeHysteria2(link, node);
     else if(strFind(link, "ss://"))
         explodeSS(link, node);
