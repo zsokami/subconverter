@@ -79,7 +79,7 @@ void hysteriaConstruct(Proxy &node, const std::string &group, const std::string 
     node.FakeType = type;
 }
 
-void hysteria2Construct(Proxy &node, const std::string &group, const std::string &remarks, const std::string &add, const std::string &port, const std::string &password, const std::string &host, const std::string &up, const std::string &down, const std::string &alpn, const std::string &obfsParam, const std::string &obfsPassword, const std::string &insecure, const std::string &cwnd, tribool udp, tribool tfo, tribool scv, tribool tls13)
+void hysteria2Construct(Proxy &node, const std::string &group, const std::string &remarks, const std::string &add, const std::string &port, const std::string &password, const std::string &host, const std::string &up, const std::string &down, const std::string &alpn, const std::string &obfsParam, const std::string &obfsPassword, const std::string &insecure, tribool udp, tribool tfo, tribool scv, tribool tls13)
 {
     commonConstruct(node, ProxyType::Hysteria2, group, remarks, add, port, udp, tfo, scv, tls13);
     node.Password = password;
@@ -90,7 +90,6 @@ void hysteria2Construct(Proxy &node, const std::string &group, const std::string
     node.OBFSParam = obfsParam;
     node.OBFSPassword = obfsPassword;
     node.Insecure = insecure;
-    node.CWND = cwnd;
 }
 
 void vlessConstruct(Proxy &node, const std::string &group, const std::string &remarks, const std::string &add, const std::string &port, const std::string &type, const std::string &id, const std::string &aid, const std::string &net, const std::string &cipher, const std::string &flow, const std::string &mode, const std::string &path, const std::string &host, const std::string &edge, const std::string &tls,const std::string &pbk, const std::string &sid, const std::string &fp ,tribool udp, tribool tfo, tribool scv, tribool tls13)
@@ -1360,9 +1359,8 @@ void explodeClash(Node yamlnode, std::vector<Proxy> &nodes)
             } else {
                 insecure = "0";
             }
-            singleproxy["cwnd"] >> cwnd;
 
-            hysteria2Construct(node, group, ps, server, port, password, host, up, down, alpn, obfsParam, obfsPassword, insecure, cwnd, udp, tfo, scv);
+            hysteria2Construct(node, group, ps, server, port, password, host, up, down, alpn, obfsParam, obfsPassword, insecure, udp, tfo, scv);
             break;
         default:
             continue;
@@ -1504,12 +1502,11 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node)
     alpn = getUrlArg(addition,"alpn");
     obfsParam = getUrlArg(addition,"obfs");
     obfsPassword = getUrlArg(addition,"obfs-password");
-    cwnd = getUrlArg(addition,"cwnd");
 
     if(remarks.empty())
         remarks = add + ":" + port;
 
-    hysteria2Construct(node, HYSTERIA2_DEFAULT_GROUP, remarks, add, port, password, host, up, down, alpn, obfsParam, obfsPassword, insecure, cwnd);
+    hysteria2Construct(node, HYSTERIA2_DEFAULT_GROUP, remarks, add, port, password, host, up, down, alpn, obfsParam, obfsPassword, insecure);
     return;
 }
 
