@@ -1466,7 +1466,7 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node)
     pos = hysteria2.rfind("?");
     if(pos != hysteria2.npos)
     {
-        addition = link.hysteria2(pos + 1);
+        addition = hysteria2.substr(pos + 1);
         hysteria2.erase(pos);
     }
 
