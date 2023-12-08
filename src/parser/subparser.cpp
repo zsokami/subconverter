@@ -204,6 +204,9 @@ void explodeHysteria(std::string hysteria, Proxy &node)
 void explodeHysteria2(std::string hysteria2, Proxy &node)
 {
     hysteria2 = regReplace(hysteria2, "(hysteria2|hy2)://", "hysteria2://");
+
+    // replace /? with ?
+    hysteria2 = regReplace(hysteria2, "/\\?", "?", true, false);
     if(regMatch(hysteria2, "hysteria2://(.*?)[:](.*)"))
     {
         explodeStdHysteria2(hysteria2, node);
@@ -1485,8 +1488,6 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node)
 
         if(regGetMatch(hysteria2, R"(^(.*)[:](\d+)$)", 3, 0, &add, &port))
             return;
-
-        add = hysteria2;
     }
 
     insecure = getUrlArg(addition, "insecure");
@@ -1495,6 +1496,7 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node)
     alpn = getUrlArg(addition,"alpn");
     obfsParam = getUrlArg(addition,"obfs");
     obfsPassword = getUrlArg(addition,"obfs-password");
+    host = getUrlArg(addition,"sni");
 
     if(remarks.empty())
         remarks = add + ":" + port;
