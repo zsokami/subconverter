@@ -1353,6 +1353,7 @@ void explodeClash(Node yamlnode, std::vector<Proxy> &nodes)
             singleproxy["sni"] >>= host;
             singleproxy["alpn"][0] >>= alpn;
 
+            scv = singleproxy["insecure"].IsDefined() ? singleproxy["insecure"].as<std::string>() == "1" : false;
             hysteria2Construct(node, group, ps, server, port, password, host, up, down, alpn, obfsParam, obfsPassword, udp, tfo, scv);
             break;
         default:
@@ -1444,7 +1445,7 @@ void explodeStdHysteria(std::string hysteria, Proxy &node)
 
 void explodeStdHysteria2(std::string hysteria2, Proxy &node)
 {
-    std::string add, port, password, host, insecure, up, down, alpn, obfsParam, obfsPassword, remarks;
+    std::string add, port, password, host, up, down, alpn, obfsParam, obfsPassword, remarks;
     std::string addition;
     tribool scv;
     hysteria2 = hysteria2.substr(12);

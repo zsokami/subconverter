@@ -363,6 +363,8 @@ void proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGr
                     singleproxy["sni"] = x.Host;
                 if (!scv.is_undef())
                     singleproxy["skip-cert-verify"] = scv.get();
+                if (!x.AllowInsecure.is_undef())
+                    singleproxy["skip-cert-verify"] = x.AllowInsecure.get();
                 if (!x.Alpn.empty())
                     singleproxy["alpn"].push_back(x.Alpn);
                 if (!x.OBFSParam.empty())
