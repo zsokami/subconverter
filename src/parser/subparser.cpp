@@ -118,12 +118,12 @@ void httpConstruct(Proxy &node, const std::string &group, const std::string &rem
     node.TLSSecure = tls;
 }
 
-void trojanConstruct(Proxy &node, const std::string &group, const std::string &remarks, const std::string &server,
+void trojanConstruct(Proxy &node, const std::string &group, const std::string &remarks, const std::string &add,
                      const std::string &port, const std::string &password, const std::string &net, const std::string &mode,
                      const std::string &host, const std::string &path, const std::string &fp, const std::string &flow, const std::string &tls, const std::string &sni,
                      tribool udp, tribool tfo,
                      tribool scv, tribool tls13) {
-    commonConstruct(node, ProxyType::Trojan, group, remarks, server, port, udp, tfo, scv, tls13);
+    commonConstruct(node, ProxyType::Trojan, group, remarks, add, port, udp, tfo, scv, tls13);
     node.Password = password;
     node.TLSSecure = tls.empty() || tls == "true" || tls == "tls" || tls == "xtls";
     node.TransferProtocol = net.empty() ? "tcp" : net;
