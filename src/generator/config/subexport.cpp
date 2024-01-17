@@ -242,7 +242,14 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
         singleproxy["name"] = x.Remark;
         singleproxy["server"] = x.Hostname;
         singleproxy["port"] = x.Port;
-
+        if (!x.PublicKey.empty()){
+            singleproxy["reality-opts"]["public-key"] = x.PublicKey;
+            if (!x.ShortId.empty())
+                singleproxy["reality-opts"]["short-id"] = x.ShortId;
+        }
+        singleproxy["client-fingerprint"] = "chrome";
+        if (!x.Fingerprint.empty())
+            singleproxy["client-fingerprint"] = x.Fingerprint;
         switch (x.Type) {
             case ProxyType::Shadowsocks:
                 //latest clash core removed support for chacha20 encryption
@@ -251,6 +258,8 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                 singleproxy["type"] = "ss";
                 singleproxy["cipher"] = x.EncryptMethod;
                 singleproxy["password"] = x.Password;
+                if (!tfo.is_undef())
+                    singleproxy["tfo"] = tfo.get();
                 if (std::all_of(x.Password.begin(), x.Password.end(), ::isdigit) && !x.Password.empty())
                     singleproxy["password"].SetTag("str");
                 switch (hash_(x.Plugin)) {
@@ -270,6 +279,12 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                         if (!scv.is_undef())
                             singleproxy["plugin-opts"]["skip-cert-verify"] = scv.get();
                         break;
+                    case "shadow-tls"_hash:
+                        singleproxy["plugin"] = "shadow-tls";
+                        singleproxy["plugin-opts"]["host"] = getUrlArg(pluginopts, "host");
+                        singleproxy["plugin-opts"]["password"] = getUrlArg(pluginopts, "password");
+                        singleproxy["plugin-opts"]["version"] = getUrlArg(pluginopts, "version");
+                        break;
                 }
                 break;
             case ProxyType::VMess:
@@ -278,6 +293,10 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                 singleproxy["alterId"] = x.AlterId;
                 singleproxy["cipher"] = x.EncryptMethod;
                 singleproxy["tls"] = x.TLSSecure;
+                if (xudp && udp)
+                    singleproxy["xudp"] = true;
+                if (!tfo.is_undef())
+                    singleproxy["tfo"] = tfo.get();
                 if (!scv.is_undef())
                     singleproxy["skip-cert-verify"] = scv.get();
                 if (!x.ServerName.empty())
@@ -318,8 +337,10 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                         break;
                     case "grpc"_hash:
                         singleproxy["network"] = x.TransferProtocol;
-                        singleproxy["servername"] = x.Host;
-                        singleproxy["grpc-opts"]["grpc-service-name"] = x.Path;
+                        singleproxy["servername"] = x.ServerName;
+                        if (!x.GRPCMode.empty())
+                            singleproxy["grpc-opts"]["grpc-mode"] = x.GRPCMode;
+                        singleproxy["grpc-opts"]["grpc-service-name"] = x.GRPCServiceName;
                         break;
                     default:
                         continue;
@@ -541,7 +562,8 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                         break;
                     case "grpc"_hash:
                         singleproxy["network"] = x.TransferProtocol;
-                        singleproxy["grpc-opts"]["grpc-mode"] = x.GRPCMode;
+                        if (!x.GRPCMode.empty())
+                            singleproxy["grpc-opts"]["grpc-mode"] = x.GRPCMode;
                         singleproxy["grpc-opts"]["grpc-service-name"] = x.GRPCServiceName;
                         break;
                     default:
@@ -1707,7 +1729,7 @@ void proxyToMellow(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Rulese
     std::string proxy;
     std::string username, password, method;
     std::string plugin, pluginopts;
-    std::string id, aid, transproto, faketype, host, path, quicsecure, quicsecret, tlssecure;
+    std::string id, aid, transproto, faketype, host, path, tlssecure;
     std::string url;
     tribool tfo, scv;
     std::vector<Proxy> nodelist;
@@ -1751,8 +1773,8 @@ void proxyToMellow(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Rulese
                             proxy += "&http.host=" + urlEncode(host);
                         break;
                     case "quic"_hash:
-                        if (!quicsecure.empty())
-                            proxy += "&quic.security=" + quicsecure + "&quic.key=" + quicsecret;
+                        if (!x.QUICSecure.empty())
+                            proxy += "&quic.security=" + x.QUICSecure + "&quic.key=" + x.QUICSecret;
                         break;
                     case "kcp"_hash:
                     case "tcp"_hash:
