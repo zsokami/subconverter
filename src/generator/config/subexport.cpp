@@ -909,6 +909,13 @@ std::string proxyToSurge(std::vector<Proxy> &nodes, const std::string &base_conf
                 if (x.SnellVersion != 0)
                     proxy += ", version=" + std::to_string(x.SnellVersion);
                 break;
+            case ProxyType::Hysteria2:
+                if (surge_ver < 4 && surge_ver != -3)
+                    continue;
+                proxy = "hysteria2, " + hostname + ", " + port + ", password=" + password;
+                if (!scv.is_undef())
+                    proxy += ", skip-cert-verify=" + scv.get_str();
+                break;
             case ProxyType::WireGuard:
                 if (surge_ver < 4 && surge_ver != -3)
                     continue;
