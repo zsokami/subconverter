@@ -234,6 +234,7 @@ void hysteria2Construct(Proxy &node, const std::string &group, const std::string
                         const std::string &port, const std::string &password, const std::string &host,
                         const std::string &up, const std::string &down, const std::string &alpn,
                         const std::string &obfsParam, const std::string &obfsPassword, const std::string &sni,
+                        const std::string &publicKey,
                         tribool udp, tribool tfo,
                         tribool scv) {
     commonConstruct(node, ProxyType::Hysteria2, group, remarks, add, port, udp, tfo, scv, tribool());
@@ -245,6 +246,7 @@ void hysteria2Construct(Proxy &node, const std::string &group, const std::string
     node.OBFSParam = obfsParam;
     node.OBFSPassword = obfsPassword;
     node.ServerName = sni;
+    node.PublicKey = publicKey;
 }
 
 void explodeVmess(std::string vmess, Proxy &node) {
@@ -1389,9 +1391,10 @@ void explodeClash(Node yamlnode, std::vector<Proxy> &nodes) {
                 singleproxy["obfs-password"] >>= obfsPassword;
                 singleproxy["sni"] >>= host;
                 singleproxy["alpn"][0] >>= alpn;
+                singleproxy["ca-str"] >>= public_key;
                 sni = host;
                 hysteria2Construct(node, group, ps, server, port, password, host, up, down, alpn, obfsParam,
-                                   obfsPassword, sni, udp, tfo, scv);
+                                   obfsPassword, sni, public_key, udp, tfo, scv);
                 break;
             default:
                 continue;
@@ -1524,7 +1527,7 @@ void explodeStdHysteria2(std::string hysteria2, Proxy &node) {
         remarks = add + ":" + port;
 
     hysteria2Construct(node, HYSTERIA2_DEFAULT_GROUP, remarks, add, port, password, host, up, down, alpn, obfsParam,
-                       obfsPassword, sni, tribool(), tribool(), scv);
+                       obfsPassword, sni, "", tribool(), tribool(), scv);
     return;
 }
 
@@ -2580,6 +2583,9 @@ void explodeSingbox(rapidjson::Value &outbounds, std::vector<Proxy> &nodes) {
                     if (tlsObj.HasMember("insecure") && tlsObj["insecure"].IsBool()) {
                         scv = tlsObj["insecure"].GetBool();
                     }
+                    if (tlsObj.HasMember("certificate") && tlsObj["certificate"].IsString()) {
+                        public_key = tlsObj["certificate"].GetString();
+                    }
                     if (tlsObj.HasMember("reality") && tlsObj["reality"].IsObject()) {
                         tls = "reality";
                         rapidjson::Value reality = tlsObj["reality"].GetObject();
@@ -2720,7 +2726,7 @@ void explodeSingbox(rapidjson::Value &outbounds, std::vector<Proxy> &nodes) {
                             obfsPassword = GetMember(obfsOpt, "password");
                         }
                         hysteria2Construct(node, group, ps, server, port, password, host, up, down, alpn, obfsParam,
-                                           obfsPassword, sni, udp, tfo, scv);
+                                           obfsPassword, sni, public_key, udp, tfo, scv);
                         break;
                     default:
                         continue;
