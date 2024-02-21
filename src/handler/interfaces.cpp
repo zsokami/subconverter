@@ -600,10 +600,10 @@ std::string subconverter(RESPONSE_CALLBACK_ARGS) {
         groupID++;
     }
     //exit if found nothing
-    if (nodes.empty() && insert_nodes.empty()) {
-        *status_code = 400;
-        return "No nodes were found!";
-    }
+    // if (nodes.empty() && insert_nodes.empty()) {
+    //     *status_code = 400;
+    //     return "No nodes were found!";
+    // }
     if (!subInfo.empty() && argAppendUserinfo.get(global.appendUserinfo))
         response.headers.emplace("Subscription-UserInfo", subInfo);
 
@@ -1031,10 +1031,10 @@ std::string surgeConfToClash(RESPONSE_CALLBACK_ARGS) {
     }
 
     //exit if found nothing
-    if (nodes.empty()) {
-        *status_code = 400;
-        return "No nodes were found!";
-    }
+    // if (nodes.empty()) {
+    //     *status_code = 400;
+    //     return "No nodes were found!";
+    // }
 
     extra_settings ext;
     ext.sort_flag = global.enableSort;

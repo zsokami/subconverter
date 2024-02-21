@@ -160,11 +160,7 @@ int addNodes(std::string link, std::vector<Proxy> &allNodes, int groupID, parse_
         if(!strSub.empty())
         {
             writeLog(LOG_TYPE_INFO, "Parsing subscription data...");
-            if(explodeConfContent(strSub, nodes) == 0)
-            {
-                writeLog(LOG_TYPE_ERROR, "Invalid subscription: '" + link + "'!");
-                return -1;
-            }
+            int isNotEmpty = explodeConfContent(strSub, nodes);
             if(startsWith(strSub, "ssd://"))
             {
                 getSubInfoFromSSD(strSub, subInfo);
@@ -173,6 +169,11 @@ int addNodes(std::string link, std::vector<Proxy> &allNodes, int groupID, parse_
             {
                 if(!getSubInfoFromHeader(extra_headers, subInfo))
                     getSubInfoFromNodes(nodes, stream_rules, time_rules, subInfo);
+            }
+            if(isNotEmpty == 0)
+            {
+                writeLog(LOG_TYPE_ERROR, "Invalid subscription: '" + link + "'!");
+                return -1;
             }
             filterNodes(nodes, exclude_remarks, include_remarks, groupID);
             for(Proxy &x : nodes)

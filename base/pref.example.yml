@@ -154,4 +154,4 @@ advanced:
   cache_ruleset: 21600
   script_clean_context: true
   async_fetch_ruleset: false
-  skip_failed_links: false
+  skip_failed_links: true
