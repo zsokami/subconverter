@@ -504,6 +504,8 @@ proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGroupCo
                     singleproxy["obfs"] = x.OBFSParam;
                 if (!x.OBFSPassword.empty())
                     singleproxy["obfs-password"] = x.OBFSPassword;
+                if (!x.Ports.empty())
+                    singleproxy["ports"] = x.Ports;
                 break;
             case ProxyType::VLESS:
                 singleproxy["type"] = "vless";

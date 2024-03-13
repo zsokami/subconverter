@@ -62,6 +62,8 @@ jobs:
           platforms: linux/amd64
           context: scripts/
           tags: asdlokj1qpi23/subconverter:${{steps.version.outputs.result}}
+          build-args: |
+            SHA=${{ steps.vars.outputs.sha_short }}
           outputs: type=image,push=true
 
       - name: Save digest
