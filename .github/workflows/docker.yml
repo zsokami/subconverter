@@ -23,9 +23,9 @@ jobs:
           - platform: linux/386
             os: ubuntu-latest
           - platform: linux/arm/v7
-            os: [self-hosted, linux, ARM]
+            os: ubuntu-latest
           - platform: linux/arm64
-            os: [self-hosted, linux, ARM64]
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.platform }} Image
     steps:
@@ -38,6 +38,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
