@@ -1456,6 +1456,27 @@ void proxyToQuanX(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Ruleset
                 } else if (tlssecure)
                     proxyStr += ", obfs=over-tls, obfs-host=" + host;
                 break;
+            case ProxyType::VLESS:
+                if (method == "auto")
+                    method = "chacha20-ietf-poly1305";
+                proxyStr = "vless = " + hostname + ":" + port + ", method=" + method + ", password=" + id;
+                if (x.AlterId != 0)
+                    proxyStr += ", aead=false";
+                if (tlssecure && !tls13.is_undef())
+                    proxyStr += ", tls13=" + std::string(tls13 ? "true" : "false");
+                if(!udp.is_undef())
+                    proxyStr += ", udp-relay=" + std::string(udp ? "true" : "false");
+                if(!tfo.is_undef())
+                    proxyStr += ", fast-open=" + std::string(tfo ? "true" : "false");
+                if (transproto == "ws") {
+                    if (tlssecure)
+                        proxyStr += ", obfs=wss";
+                    else
+                        proxyStr += ", obfs=ws";
+                    proxyStr += ", obfs-host=" + host + ", obfs-uri=" + path;
+                } else if (tlssecure)
+                    proxyStr += ", obfs=over-tls, obfs-host=" + host;
+                break;
             case ProxyType::Shadowsocks:
                 proxyStr = "shadowsocks = " + hostname + ":" + port + ", method=" + method + ", password=" + password;
                 if (!plugin.empty()) {

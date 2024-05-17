@@ -2275,6 +2275,73 @@ bool explodeSurge(std::string surge, std::vector<Proxy> &nodes) {
                         vmessConstruct(node, V2RAY_DEFAULT_GROUP, remarks, server, port, "", id, aead, net, method,
                                        path, host, "", tls, "", udp, tfo, scv, tls13);
                         break;
+                    case "vless"_hash: //quantumult x style vless link
+                        server = trim(configs[0].substr(0, configs[0].rfind(":")));
+                        port = trim(configs[0].substr(configs[0].rfind(":") + 1));
+                        if (port == "0")
+                            continue;
+                        net = "tcp";
+
+                        for (i = 1; i < configs.size(); i++) {
+                            vArray = split(trim(configs[i]), "=");
+                            if (vArray.size() != 2)
+                                continue;
+                            itemName = trim(vArray[0]);
+                            itemVal = trim(vArray[1]);
+                            switch (hash_(itemName)) {
+                                case "method"_hash:
+                                    method = itemVal;
+                                    break;
+                                case "password"_hash:
+                                    id = itemVal;
+                                    break;
+                                case "tag"_hash:
+                                    remarks = itemVal;
+                                    break;
+                                case "obfs"_hash:
+                                    switch (hash_(itemVal)) {
+                                        case "ws"_hash:
+                                            net = "ws";
+                                            break;
+                                        case "over-tls"_hash:
+                                            tls = "tls";
+                                            break;
+                                        case "wss"_hash:
+                                            net = "ws";
+                                            tls = "tls";
+                                            break;
+                                    }
+                                    break;
+                                case "obfs-host"_hash:
+                                    host = itemVal;
+                                    break;
+                                case "obfs-uri"_hash:
+                                    path = itemVal;
+                                    break;
+                                case "over-tls"_hash:
+                                    tls = itemVal == "true" ? "tls" : "";
+                                    break;
+                                case "udp-relay"_hash:
+                                    udp = itemVal;
+                                    break;
+                                case "fast-open"_hash:
+                                    tfo = itemVal;
+                                    break;
+                                case "tls13"_hash:
+                                    tls13 = itemVal;
+                                    break;
+                                case "aead"_hash:
+                                    aead = itemVal == "true" ? "0" : "1";
+                                default:
+                                    continue;
+                            }
+                        }
+                        if (remarks.empty())
+                            remarks = server + ":" + port;
+                        vlessConstruct(node, XRAY_DEFAULT_GROUP, remarks, server, port, "", id, aead, net, method,
+                                       "chrome", "", path, host, "",
+                                       tls, "", "", fp, sni, udp, tfo, scv, tls13);
+                        break;
                     case "trojan"_hash: //quantumult x style trojan link
                         server = trim(configs[0].substr(0, configs[0].rfind(':')));
                         port = trim(configs[0].substr(configs[0].rfind(':') + 1));
