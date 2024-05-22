@@ -1464,10 +1464,6 @@ void proxyToQuanX(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Ruleset
                     proxyStr += ", aead=false";
                 if (tlssecure && !tls13.is_undef())
                     proxyStr += ", tls13=" + std::string(tls13 ? "true" : "false");
-                if(!udp.is_undef())
-                    proxyStr += ", udp-relay=" + std::string(udp ? "true" : "false");
-                if(!tfo.is_undef())
-                    proxyStr += ", fast-open=" + std::string(tfo ? "true" : "false");
                 if (transproto == "ws") {
                     if (tlssecure)
                         proxyStr += ", obfs=wss";
