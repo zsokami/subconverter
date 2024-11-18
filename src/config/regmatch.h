@@ -15,21 +15,21 @@ public:
     RegexWrapper(const std::string &pattern) : pattern(pattern) {}
     const jp::Regex &reg() {
         if (!_reg) {
-            _reg = jp::Regex();
+            _reg.emplace();
             _reg->setPattern(pattern).addModifier("m").addPcre2Option(PCRE2_UTF|PCRE2_ALT_BSUX).compile();
         }
         return *_reg;
     };
     const jp::Regex &reg_non_multiline() {
         if (!_reg_non_multiline) {
-            _reg_non_multiline = jp::Regex();
+            _reg_non_multiline.emplace();
             _reg_non_multiline->setPattern(pattern).addPcre2Option(PCRE2_UTF|PCRE2_ALT_BSUX).compile();
         }
         return *_reg_non_multiline;
     };
     const jp::Regex &reg_full_match() {
         if (!_reg_full_match) {
-            _reg_full_match = jp::Regex();
+            _reg_full_match.emplace();
             _reg_full_match->setPattern(pattern).addModifier("m").addPcre2Option(PCRE2_ANCHORED|PCRE2_ENDANCHORED|PCRE2_UTF).compile();
         }
         return *_reg_full_match;
@@ -49,7 +49,7 @@ struct RegexMatchConfig
     std::optional<RegexWrapper> real_rule;
     RegexWrapper &reg_wrapper() {
         if (!real_rule) {
-            real_rule = RegexWrapper(Match);
+            real_rule.emplace(Match);
         }
         return *real_rule;
     }

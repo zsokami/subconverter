@@ -159,8 +159,8 @@ void extract_rule_once(RegexMatchConfig &config, const jp::Regex &regex) {
     if (config.target) return;
     std::string target, real_rule;
     regGetMatch(config.Match, regex, 3, 0, &target, &real_rule);
-    config.target = RegexWrapper(target);
-    config.real_rule = RegexWrapper(real_rule);
+    config.target.emplace(target);
+    config.real_rule.emplace(real_rule);
 }
 
 bool applyMatcher(RegexMatchConfig &config, const Proxy &node) {
