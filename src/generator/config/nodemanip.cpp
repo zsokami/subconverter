@@ -373,11 +373,11 @@ void filterNodes(std::vector<Proxy> &nodes, RegexMatchConfigs &exclude_remarks, 
     writeLog(LOG_TYPE_INFO, "Filter done.");
 }
 
-void nodeRename(Proxy &node, const RegexMatchConfigs &rename_array, extra_settings &ext)
+void nodeRename(Proxy &node, RegexMatchConfigs &rename_array, extra_settings &ext)
 {
     std::string &remark = node.Remark, original_remark = node.Remark, returned_remark;
 
-    for(const RegexMatchConfig &x : rename_array)
+    for(RegexMatchConfig &x : rename_array)
     {
         if(!x.Script.empty() && ext.authorized)
         {
@@ -425,11 +425,11 @@ std::string removeEmoji(const std::string &orig_remark)
     return remark;
 }
 
-std::string addEmoji(const Proxy &node, const RegexMatchConfigs &emoji_array, extra_settings &ext)
+std::string addEmoji(const Proxy &node, RegexMatchConfigs &emoji_array, extra_settings &ext)
 {
     std::string ret;
 
-    for(const RegexMatchConfig &x : emoji_array)
+    for(RegexMatchConfig &x : emoji_array)
     {
         if(!x.Script.empty() && ext.authorized)
         {

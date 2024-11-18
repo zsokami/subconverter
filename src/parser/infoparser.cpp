@@ -83,7 +83,7 @@ bool getSubInfoFromHeader(const std::string &header, std::string &result)
     return false;
 }
 
-bool getSubInfoFromNodes(const std::vector<Proxy> &nodes, const RegexMatchConfigs &stream_rules, const RegexMatchConfigs &time_rules, std::string &result)
+bool getSubInfoFromNodes(const std::vector<Proxy> &nodes, RegexMatchConfigs &stream_rules, RegexMatchConfigs &time_rules, std::string &result)
 {
     std::string remarks, stream_info, time_info, retStr;
 
@@ -92,7 +92,7 @@ bool getSubInfoFromNodes(const std::vector<Proxy> &nodes, const RegexMatchConfig
         remarks = x.Remark;
         if(stream_info.empty())
         {
-            for(const RegexMatchConfig &y : stream_rules)
+            for(RegexMatchConfig &y : stream_rules)
             {
                 if(regMatch(remarks, y.Match))
                 {
@@ -111,7 +111,7 @@ bool getSubInfoFromNodes(const std::vector<Proxy> &nodes, const RegexMatchConfig
         remarks = x.Remark;
         if(time_info.empty())
         {
-            for(const RegexMatchConfig &y : time_rules)
+            for(RegexMatchConfig &y : time_rules)
             {
                 if(regMatch(remarks, y.Match))
                 {
