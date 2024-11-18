@@ -555,10 +555,8 @@ std::string subconverter(RESPONSE_CALLBACK_ARGS) {
 
     parse_settings parse_set;
     parse_set.proxy = &proxy;
-    RegexMatchConfigs exclude_remarks(lExcludeRemarks.size());
-    std::transform(lExcludeRemarks.begin(), lExcludeRemarks.end(), exclude_remarks.begin(), [](const std::string &str) { return RegexMatchConfig{str}; });
-    RegexMatchConfigs include_remarks(lIncludeRemarks.size());
-    std::transform(lIncludeRemarks.begin(), lIncludeRemarks.end(), include_remarks.begin(), [](const std::string &str) { return RegexMatchConfig{str}; });
+    RegexMatchConfigs exclude_remarks; for (const auto &s : lExcludeRemarks) exclude_remarks.emplace_back(s);
+    RegexMatchConfigs include_remarks; for (const auto &s : lIncludeRemarks) include_remarks.emplace_back(s);
     parse_set.exclude_remarks = &exclude_remarks;
     parse_set.include_remarks = &include_remarks;
     parse_set.stream_rules = &stream_temp;

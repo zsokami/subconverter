@@ -47,6 +47,8 @@ struct RegexMatchConfig
 
     std::optional<RegexWrapper> target;
     std::optional<RegexWrapper> real_rule;
+    RegexMatchConfig() {}
+    RegexMatchConfig(const String &rule) : Match(rule) {}
     RegexWrapper &reg_wrapper() {
         if (!real_rule) {
             real_rule.emplace(Match);

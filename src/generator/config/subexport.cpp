@@ -238,7 +238,7 @@ groupGenerate(const std::string &rule, std::vector<Proxy> &nodelist, string_arra
     }
 #endif // NO_JS_RUNTIME
     else {
-        RegexMatchConfig config = { rule };
+        RegexMatchConfig config(rule);
         for (Proxy &x: nodelist) {
             if (applyMatcher(config, x) && (config.empty() || regFind(x.Remark, config)) && vis.emplace(&x).second)
                 filtered_nodelist.emplace_back(x.Remark);
@@ -1912,8 +1912,7 @@ void proxyToMellow(std::vector<Proxy> &nodes, INIReader &ini, std::vector<Rulese
             if (nodelist.empty())
                 filtered_nodelist.emplace_back("DIRECT");
             else {
-                filtered_nodelist.resize(nodelist.size());
-                std::transform(nodelist.begin(), nodelist.end(), filtered_nodelist.begin(), [](const Proxy &p) { return p.Remark; });
+                for (const auto &p : nodelist) filtered_nodelist.emplace_back(p.Remark);
             }
         }
 
