@@ -172,7 +172,7 @@ bool applyMatcher(RegexMatchConfig &config, const Proxy &node) {
     } else if (startsWith(rule, "!!GROUPID=") || startsWith(rule, "!!INSERT=")) {
         int dir = startsWith(rule, "!!INSERT=") ? -1 : 1;
         extract_rule_once(config, groupid_regex);
-        return matchRange(target.pattern, dir * node.GroupId);
+        return matchRange(target.pattern(), dir * node.GroupId);
     } else if (startsWith(rule, "!!TYPE=")) {
         extract_rule_once(config, type_regex);
         if (node.Type == ProxyType::Unknown)
@@ -180,7 +180,7 @@ bool applyMatcher(RegexMatchConfig &config, const Proxy &node) {
         return regMatch(types.at(node.Type), target);
     } else if (startsWith(rule, "!!PORT=")) {
         extract_rule_once(config, port_regex);
-        return matchRange(target.pattern, node.Port);
+        return matchRange(target.pattern(), node.Port);
     } else if (startsWith(rule, "!!SERVER=")) {
         extract_rule_once(config, server_regex);
         return regFind(node.Hostname, target);

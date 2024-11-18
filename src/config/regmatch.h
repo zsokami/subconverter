@@ -10,9 +10,9 @@ private:
     std::optional<jp::Regex> _reg;
     std::optional<jp::Regex> _reg_non_multiline;
     std::optional<jp::Regex> _reg_full_match;
+    std::string _pattern;
 public:
-    const std::string pattern;
-    RegexWrapper(const std::string &pattern) : pattern(pattern) {}
+    RegexWrapper(const std::string &pattern) : _pattern(pattern) {}
     const jp::Regex &reg() {
         if (!_reg) {
             _reg.emplace();
@@ -20,6 +20,9 @@ public:
         }
         return *_reg;
     };
+    const std::string &pattern() {
+        return _pattern;
+    }
     const jp::Regex &reg_non_multiline() {
         if (!_reg_non_multiline) {
             _reg_non_multiline.emplace();
