@@ -237,7 +237,7 @@ bool chkIgnore(const Proxy &node, RegexMatchConfigs &exclude_remarks, RegexMatch
     //std::string remarks = UTF8ToACP(node.remarks);
     //std::string remarks = node.remarks;
     //writeLog(LOG_TYPE_INFO, "Comparing exclude remarks...");
-    excluded = std::any_of(exclude_remarks.begin(), exclude_remarks.end(), [&node](const auto &x)
+    excluded = std::any_of(exclude_remarks.begin(), exclude_remarks.end(), [&node](auto &x)
     {
         if(applyMatcher(x, node))
         {
@@ -250,7 +250,7 @@ bool chkIgnore(const Proxy &node, RegexMatchConfigs &exclude_remarks, RegexMatch
     if(include_remarks.size() != 0)
     {
         //writeLog(LOG_TYPE_INFO, "Comparing include remarks...");
-        included = std::any_of(include_remarks.begin(), include_remarks.end(), [&node](const auto &x)
+        included = std::any_of(include_remarks.begin(), include_remarks.end(), [&node](auto &x)
         {
             if(applyMatcher(x, node))
             {
