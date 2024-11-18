@@ -1,6 +1,6 @@
 #ifndef VERSION_H_INCLUDED
 #define VERSION_H_INCLUDED
 
-#define VERSION "v0.10.3 Mannix"
+#define VERSION "v0.11.0-a1 Mannix"
 
 #endif // VERSION_H_INCLUDED

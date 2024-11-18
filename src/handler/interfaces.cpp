@@ -2,6 +2,7 @@
 #include <string>
 #include <mutex>
 #include <numeric>
+#include <algorithm>
 
 #include <inja.hpp>
 #include <yaml-cpp/yaml.h>
@@ -554,8 +555,12 @@ std::string subconverter(RESPONSE_CALLBACK_ARGS) {
 
     parse_settings parse_set;
     parse_set.proxy = &proxy;
-    parse_set.exclude_remarks = &lExcludeRemarks;
-    parse_set.include_remarks = &lIncludeRemarks;
+    RegexMatchConfigs exclude_remarks(lExcludeRemarks.size());
+    std::transform(lExcludeRemarks.begin(), lExcludeRemarks.end(), exclude_remarks.begin(), [](const std::string &str) { return RegexMatchConfig{str}; });
+    RegexMatchConfigs include_remarks(lIncludeRemarks.size());
+    std::transform(lIncludeRemarks.begin(), lIncludeRemarks.end(), include_remarks.begin(), [](const std::string &str) { return RegexMatchConfig{str}; });
+    parse_set.exclude_remarks = &exclude_remarks;
+    parse_set.include_remarks = &include_remarks;
     parse_set.stream_rules = &stream_temp;
     parse_set.time_rules = &time_temp;
     parse_set.sub_info = &subInfo;
@@ -1012,7 +1017,7 @@ std::string surgeConfToClash(RESPONSE_CALLBACK_ARGS) {
     std::string subInfo;
     parse_settings parse_set;
     parse_set.proxy = &proxy;
-    parse_set.exclude_remarks = parse_set.include_remarks = &dummy_str_array;
+    parse_set.exclude_remarks = parse_set.include_remarks = &dummy_regex_array;
     parse_set.stream_rules = parse_set.time_rules = &dummy_regex_array;
     parse_set.request_header = &request.headers;
     parse_set.sub_info = &subInfo;

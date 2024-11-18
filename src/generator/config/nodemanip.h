@@ -17,8 +17,8 @@
 struct parse_settings
 {
     std::string *proxy = nullptr;
-    string_array *exclude_remarks = nullptr;
-    string_array *include_remarks = nullptr;
+    RegexMatchConfigs *exclude_remarks = nullptr;
+    RegexMatchConfigs *include_remarks = nullptr;
     RegexMatchConfigs *stream_rules = nullptr;
     RegexMatchConfigs *time_rules = nullptr;
     std::string *sub_info = nullptr;
@@ -31,8 +31,9 @@ struct parse_settings
 };
 
 int addNodes(std::string link, std::vector<Proxy> &allNodes, int groupID, parse_settings &parse_set);
-void filterNodes(std::vector<Proxy> &nodes, string_array &exclude_remarks, string_array &include_remarks, int groupID);
-bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &node);
+void filterNodes(std::vector<Proxy> &nodes, RegexMatchConfigs &exclude_remarks, RegexMatchConfigs &include_remarks, int groupID);
+// bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &node);
+bool applyMatcher(RegexMatchConfig &config, const Proxy &node);
 void preprocessNodes(std::vector<Proxy> &nodes, extra_settings &ext);
 
 #endif // NODEMANIP_H_INCLUDED

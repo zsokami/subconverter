@@ -152,7 +152,7 @@ bool regFind(const std::string &src, const std::string &match)
 std::string regReplace(const std::string &src, const std::string &match, const std::string &rep, bool global, bool multiline)
 {
     jp::Regex reg;
-    reg.setPattern(match).addModifier(multiline ? "m" : "").addPcre2Option(PCRE2_UTF|PCRE2_MULTILINE|PCRE2_ALT_BSUX).compile();
+    reg.setPattern(match).addModifier(multiline ? "m" : "").addPcre2Option(PCRE2_UTF|PCRE2_ALT_BSUX).compile();
     if(!reg)
         return src;
     return reg.replace(src, rep, global ? "gEx" : "Ex");
@@ -219,7 +219,140 @@ std::vector<std::string> regGetAllMatch(const std::string &src, const std::strin
 
 //#endif // USE_STD_REGEX
 
+const jp::Regex _reg_trim = RegexWrapper(R"(^\s*([\s\S]*?)\s*$)").reg_non_multiline();
+
 std::string regTrim(const std::string &src)
 {
-    return regReplace(src, R"(^\s*([\s\S]*)\s*$)", "$1", false, false);
+    return regReplace(src, _reg_trim, "$1", false);
+}
+
+
+bool regFind(const std::string &src, const jp::Regex &reg) {
+    if(!reg)
+        return false;
+    return reg.match(src, "g");
+}
+std::string regReplace(const std::string &src, const jp::Regex &reg, const std::string &rep, bool global) {
+    if(!reg)
+        return src;
+    return reg.replace(src, rep, global ? "gEx" : "Ex");
+}
+bool regMatch(const std::string &src, const jp::Regex &reg) {
+    if(!reg)
+        return false;
+    return reg.match(src, "g");
+}
+int regGetMatch(const std::string &src, const jp::Regex &reg, size_t group_count, ...) {
+    auto result = regGetAllMatch(src, reg, false);
+    if(result.empty())
+        return -1;
+    va_list vl;
+    va_start(vl, group_count);
+    size_t index = 0;
+    while(group_count)
+    {
+        std::string* arg = va_arg(vl, std::string*);
+        if(arg != nullptr)
+            *arg = std::move(result[index]);
+        index++;
+        group_count--;
+        if(result.size() <= index)
+            break;
+    }
+    va_end(vl);
+    return 0;
+}
+std::vector<std::string> regGetAllMatch(const std::string &src, const jp::Regex &reg, bool group_only) {
+    jp::VecNum vec_num;
+    jp::RegexMatch rm;
+    size_t count = rm.setRegexObject(&reg).setSubject(src).setNumberedSubstringVector(&vec_num).setModifier("gm").match();
+    std::vector<std::string> result;
+    if(!count)
+        return result;
+    size_t begin = 0;
+    if(group_only)
+        begin = 1;
+    size_t index = begin, match_index = 0;
+    while(true)
+    {
+        if(vec_num.size() <= match_index)
+            break;
+        if(vec_num[match_index].size() <= index)
+        {
+            match_index++;
+            index = begin;
+            continue;
+        }
+        result.push_back(std::move(vec_num[match_index][index]));
+        index++;
+    }
+    return result;
+}
+
+
+bool regFind(const std::string &src, RegexWrapper &reg_wrapper) {
+    return regFind(src, reg_wrapper.reg());
+}
+std::string regReplace(const std::string &src, RegexWrapper &reg_wrapper, const std::string &rep, bool global, bool multiline) {
+    return regReplace(src, multiline ? reg_wrapper.reg() : reg_wrapper.reg_non_multiline(), rep, global);
+}
+bool regMatch(const std::string &src, RegexWrapper &reg_wrapper) {
+    return regMatch(src, reg_wrapper.reg_full_match());
+}
+int regGetMatch(const std::string &src, RegexWrapper &reg_wrapper, size_t group_count, ...) {
+    auto result = regGetAllMatch(src, reg_wrapper, false);
+    if(result.empty())
+        return -1;
+    va_list vl;
+    va_start(vl, group_count);
+    size_t index = 0;
+    while(group_count)
+    {
+        std::string* arg = va_arg(vl, std::string*);
+        if(arg != nullptr)
+            *arg = std::move(result[index]);
+        index++;
+        group_count--;
+        if(result.size() <= index)
+            break;
+    }
+    va_end(vl);
+    return 0;
+}
+std::vector<std::string> regGetAllMatch(const std::string &src, RegexWrapper &reg_wrapper, bool group_only) {
+    return regGetAllMatch(src, reg_wrapper.reg(), group_only);
+}
+
+
+bool regFind(const std::string &src, RegexMatchConfig &config) {
+    return regFind(src, config.reg_wrapper());
+}
+std::string regReplace(const std::string &src, RegexMatchConfig &config, bool global, bool multiline) {
+    return regReplace(src, config.reg_wrapper(), config.Replace, global, multiline);
+}
+bool regMatch(const std::string &src, RegexMatchConfig &config) {
+    return regMatch(src, config.reg_wrapper());
+}
+int regGetMatch(const std::string &src, RegexMatchConfig &config, size_t group_count, ...) {
+    auto result = regGetAllMatch(src, config, false);
+    if(result.empty())
+        return -1;
+    va_list vl;
+    va_start(vl, group_count);
+    size_t index = 0;
+    while(group_count)
+    {
+        std::string* arg = va_arg(vl, std::string*);
+        if(arg != nullptr)
+            *arg = std::move(result[index]);
+        index++;
+        group_count--;
+        if(result.size() <= index)
+            break;
+    }
+    va_end(vl);
+    return 0;
+}
+std::vector<std::string> regGetAllMatch(const std::string &src, RegexMatchConfig &config, bool group_only) {
+    return regGetAllMatch(src, config.reg_wrapper(), group_only);
 }

@@ -20,7 +20,7 @@
 
 extern Settings global;
 
-bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &node);
+// bool applyMatcher(const std::string &rule, std::string &real_rule, const Proxy &node);
 
 int explodeConf(const std::string &filepath, std::vector<Proxy> &nodes)
 {
@@ -35,8 +35,8 @@ void copyNodes(std::vector<Proxy> &source, std::vector<Proxy> &dest)
 int addNodes(std::string link, std::vector<Proxy> &allNodes, int groupID, parse_settings &parse_set)
 {
     std::string &proxy = *parse_set.proxy, &subInfo = *parse_set.sub_info;
-    string_array &exclude_remarks = *parse_set.exclude_remarks;
-    string_array &include_remarks = *parse_set.include_remarks;
+    RegexMatchConfigs &exclude_remarks = *parse_set.exclude_remarks;
+    RegexMatchConfigs &include_remarks = *parse_set.include_remarks;
     RegexMatchConfigs &stream_rules = *parse_set.stream_rules;
     RegexMatchConfigs &time_rules = *parse_set.time_rules;
     string_icase_map *request_headers = parse_set.request_header;
@@ -231,19 +231,18 @@ int addNodes(std::string link, std::vector<Proxy> &allNodes, int groupID, parse_
     return 0;
 }
 
-bool chkIgnore(const Proxy &node, string_array &exclude_remarks, string_array &include_remarks)
+bool chkIgnore(const Proxy &node, RegexMatchConfigs &exclude_remarks, RegexMatchConfigs &include_remarks)
 {
     bool excluded = false, included = false;
     //std::string remarks = UTF8ToACP(node.remarks);
     //std::string remarks = node.remarks;
     //writeLog(LOG_TYPE_INFO, "Comparing exclude remarks...");
-    excluded = std::any_of(exclude_remarks.cbegin(), exclude_remarks.cend(), [&node](const auto &x)
+    excluded = std::any_of(exclude_remarks.begin(), exclude_remarks.end(), [&node](const auto &x)
     {
-        std::string real_rule;
-        if(applyMatcher(x, real_rule, node))
+        if(applyMatcher(x, node))
         {
-            if(real_rule.empty()) return true;
-            return regFind(node.Remark, real_rule);
+            if(x.empty()) return true;
+            return regFind(node.Remark, x);
         }
         else
             return false;
@@ -251,13 +250,12 @@ bool chkIgnore(const Proxy &node, string_array &exclude_remarks, string_array &i
     if(include_remarks.size() != 0)
     {
         //writeLog(LOG_TYPE_INFO, "Comparing include remarks...");
-        included = std::any_of(include_remarks.cbegin(), include_remarks.cend(), [&node](const auto &x)
+        included = std::any_of(include_remarks.begin(), include_remarks.end(), [&node](const auto &x)
         {
-            std::string real_rule;
-            if(applyMatcher(x, real_rule, node))
+            if(applyMatcher(x, node))
             {
-                if(real_rule.empty()) return true;
-                return regFind(node.Remark, real_rule);
+                if(x.empty()) return true;
+                return regFind(node.Remark, x);
             }
             else
                 return false;
@@ -271,7 +269,7 @@ bool chkIgnore(const Proxy &node, string_array &exclude_remarks, string_array &i
     return excluded || !included;
 }
 
-void filterNodes(std::vector<Proxy> &nodes, string_array &exclude_remarks, string_array &include_remarks, int groupID)
+void filterNodes(std::vector<Proxy> &nodes, RegexMatchConfigs &exclude_remarks, RegexMatchConfigs &include_remarks, int groupID)
 {
     int node_index = 0;
     std::vector<Proxy>::iterator iter = nodes.begin();
@@ -377,7 +375,7 @@ void filterNodes(std::vector<Proxy> &nodes, string_array &exclude_remarks, strin
 
 void nodeRename(Proxy &node, const RegexMatchConfigs &rename_array, extra_settings &ext)
 {
-    std::string &remark = node.Remark, original_remark = node.Remark, returned_remark, real_rule;
+    std::string &remark = node.Remark, original_remark = node.Remark, returned_remark;
 
     for(const RegexMatchConfig &x : rename_array)
     {
@@ -403,8 +401,8 @@ void nodeRename(Proxy &node, const RegexMatchConfigs &rename_array, extra_settin
             }, global.scriptCleanContext);
             continue;
         }
-        if(applyMatcher(x.Match, real_rule, node) && real_rule.size())
-            remark = regReplace(remark, real_rule, x.Replace);
+        if(applyMatcher(x, node) && !x.empty())
+            remark = regReplace(remark, x);
     }
     if(remark.empty())
         remark = original_remark;
@@ -429,7 +427,7 @@ std::string removeEmoji(const std::string &orig_remark)
 
 std::string addEmoji(const Proxy &node, const RegexMatchConfigs &emoji_array, extra_settings &ext)
 {
-    std::string real_rule, ret;
+    std::string ret;
 
     for(const RegexMatchConfig &x : emoji_array)
     {
@@ -458,10 +456,11 @@ std::string addEmoji(const Proxy &node, const RegexMatchConfigs &emoji_array, ex
                 return result;
             continue;
         }
-        if(x.Replace.empty())
-            continue;
-        if(applyMatcher(x.Match, real_rule, node) && real_rule.size() && regFind(node.Remark, real_rule))
+        if(applyMatcher(x, node) && !x.empty() && regFind(node.Remark, x)) {
+            if(x.Replace.empty())
+                return node.Remark;
             return x.Replace + " " + node.Remark;
+        }
     }
     return node.Remark;
 }
