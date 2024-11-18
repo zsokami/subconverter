@@ -72,7 +72,7 @@ bool matchRange(const std::string &range, int target) {
     bool match = false;
     std::string range_begin_str, range_end_str;
     int range_begin, range_end;
-    static const jp::Regex reg_num = RegexWrapper("-?\\d+").reg_full_match(),
+    static jp::Regex reg_num = RegexWrapper("-?\\d+").reg_full_match(),
         reg_range = RegexWrapper("(\\d+)-(\\d+)").reg_full_match(),
         reg_not = RegexWrapper("\\!-?(\\d+)").reg_full_match(),
         reg_not_range = RegexWrapper("\\!(\\d+)-(\\d+)").reg_full_match(),
@@ -110,11 +110,11 @@ bool matchRange(const std::string &range, int target) {
     return match;
 }
 
-const jp::Regex groupid_regex = RegexWrapper(R"(^!!(?:GROUPID|INSERT)=([\d\-+!,]+)(?:!!(.*))?$)").reg();
-const jp::Regex group_regex = RegexWrapper(R"(^!!(?:GROUP)=(.+?)(?:!!(.*))?$)").reg();
-const jp::Regex type_regex = RegexWrapper(R"(^!!(?:TYPE)=(.+?)(?:!!(.*))?$)").reg();
-const jp::Regex port_regex = RegexWrapper(R"(^!!(?:PORT)=(.+?)(?:!!(.*))?$)").reg();
-const jp::Regex server_regex = RegexWrapper(R"(^!!(?:SERVER)=(.+?)(?:!!(.*))?$)").reg();
+jp::Regex groupid_regex = RegexWrapper(R"(^!!(?:GROUPID|INSERT)=([\d\-+!,]+)(?:!!(.*))?$)").reg();
+jp::Regex group_regex = RegexWrapper(R"(^!!(?:GROUP)=(.+?)(?:!!(.*))?$)").reg();
+jp::Regex type_regex = RegexWrapper(R"(^!!(?:TYPE)=(.+?)(?:!!(.*))?$)").reg();
+jp::Regex port_regex = RegexWrapper(R"(^!!(?:PORT)=(.+?)(?:!!(.*))?$)").reg();
+jp::Regex server_regex = RegexWrapper(R"(^!!(?:SERVER)=(.+?)(?:!!(.*))?$)").reg();
 const std::map<ProxyType, const char *> types = {
     {ProxyType::Shadowsocks,  "SS"},
     {ProxyType::ShadowsocksR, "SSR"},
@@ -155,7 +155,7 @@ const std::map<ProxyType, const char *> types = {
 //     return true;
 // }
 
-void extract_rule_once(RegexMatchConfig &config, const jp::Regex &regex) {
+void extract_rule_once(RegexMatchConfig &config, jp::Regex &regex) {
     if (config.target) return;
     std::string target, real_rule;
     regGetMatch(config.Match, regex, 3, 0, &target, &real_rule);

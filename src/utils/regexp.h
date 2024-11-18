@@ -13,11 +13,11 @@ int regGetMatch(const std::string &src, const std::string &match, size_t group_c
 std::vector<std::string> regGetAllMatch(const std::string &src, const std::string &match, bool group_only = false);
 std::string regTrim(const std::string &src);
 
-bool regFind(const std::string &src, const jp::Regex &reg);
-std::string regReplace(const std::string &src, const jp::Regex &reg, const std::string &rep, bool global = true);
-bool regMatch(const std::string &src, const jp::Regex &reg);
-int regGetMatch(const std::string &src, const jp::Regex &reg, size_t group_count, ...);
-std::vector<std::string> regGetAllMatch(const std::string &src, const jp::Regex &reg, bool group_only = false);
+bool regFind(const std::string &src, jp::Regex &reg);
+std::string regReplace(const std::string &src, jp::Regex &reg, const std::string &rep, bool global = true);
+bool regMatch(const std::string &src, jp::Regex &reg);
+int regGetMatch(const std::string &src, jp::Regex &reg, size_t group_count, ...);
+std::vector<std::string> regGetAllMatch(const std::string &src, jp::Regex &reg, bool group_only = false);
 
 bool regFind(const std::string &src, RegexWrapper &reg_wrapper);
 std::string regReplace(const std::string &src, RegexWrapper &reg_wrapper, const std::string &rep, bool global = true, bool multiline = true);

@@ -219,7 +219,7 @@ std::vector<std::string> regGetAllMatch(const std::string &src, const std::strin
 
 //#endif // USE_STD_REGEX
 
-const jp::Regex _reg_trim = RegexWrapper(R"(^\s*([\s\S]*?)\s*$)").reg_non_multiline();
+jp::Regex _reg_trim = RegexWrapper(R"(^\s*([\s\S]*?)\s*$)").reg_non_multiline();
 
 std::string regTrim(const std::string &src)
 {
@@ -227,22 +227,22 @@ std::string regTrim(const std::string &src)
 }
 
 
-bool regFind(const std::string &src, const jp::Regex &reg) {
+bool regFind(const std::string &src, jp::Regex &reg) {
     if(!reg)
         return false;
     return reg.match(src, "g");
 }
-std::string regReplace(const std::string &src, const jp::Regex &reg, const std::string &rep, bool global) {
+std::string regReplace(const std::string &src, jp::Regex &reg, const std::string &rep, bool global) {
     if(!reg)
         return src;
     return reg.replace(src, rep, global ? "gEx" : "Ex");
 }
-bool regMatch(const std::string &src, const jp::Regex &reg) {
+bool regMatch(const std::string &src, jp::Regex &reg) {
     if(!reg)
         return false;
     return reg.match(src, "g");
 }
-int regGetMatch(const std::string &src, const jp::Regex &reg, size_t group_count, ...) {
+int regGetMatch(const std::string &src, jp::Regex &reg, size_t group_count, ...) {
     auto result = regGetAllMatch(src, reg, false);
     if(result.empty())
         return -1;
@@ -262,7 +262,7 @@ int regGetMatch(const std::string &src, const jp::Regex &reg, size_t group_count
     va_end(vl);
     return 0;
 }
-std::vector<std::string> regGetAllMatch(const std::string &src, const jp::Regex &reg, bool group_only) {
+std::vector<std::string> regGetAllMatch(const std::string &src, jp::Regex &reg, bool group_only) {
     jp::VecNum vec_num;
     jp::RegexMatch rm;
     size_t count = rm.setRegexObject(&reg).setSubject(src).setNumberedSubstringVector(&vec_num).setModifier("gm").match();

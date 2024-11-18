@@ -13,7 +13,7 @@ private:
     std::string _pattern;
 public:
     RegexWrapper(const std::string &pattern) : _pattern(pattern) {}
-    const jp::Regex &reg() {
+    jp::Regex &reg() {
         if (!_reg) {
             _reg.emplace();
             _reg->setPattern(_pattern).addModifier("m").addPcre2Option(PCRE2_UTF|PCRE2_ALT_BSUX).compile();
@@ -23,14 +23,14 @@ public:
     const std::string &pattern() {
         return _pattern;
     }
-    const jp::Regex &reg_non_multiline() {
+    jp::Regex &reg_non_multiline() {
         if (!_reg_non_multiline) {
             _reg_non_multiline.emplace();
             _reg_non_multiline->setPattern(_pattern).addPcre2Option(PCRE2_UTF|PCRE2_ALT_BSUX).compile();
         }
         return *_reg_non_multiline;
     };
-    const jp::Regex &reg_full_match() {
+    jp::Regex &reg_full_match() {
         if (!_reg_full_match) {
             _reg_full_match.emplace();
             _reg_full_match->setPattern(_pattern).addModifier("m").addPcre2Option(PCRE2_ANCHORED|PCRE2_ENDANCHORED|PCRE2_UTF).compile();
