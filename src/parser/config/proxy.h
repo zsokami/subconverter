@@ -22,7 +22,8 @@ enum class ProxyType {
     WireGuard,
     VLESS,
     Hysteria,
-    Hysteria2
+    Hysteria2,
+    TUIC
 };
 
 inline String getProxyTypeName(ProxyType type) {
@@ -51,6 +52,8 @@ inline String getProxyTypeName(ProxyType type) {
             return "Hysteria";
         case ProxyType::Hysteria2:
             return "Hysteria2";
+        case ProxyType::TUIC:
+            return "Tuic";
         default:
             return "Unknown";
     }
@@ -64,7 +67,7 @@ struct Proxy {
     String Remark;
     String Hostname;
     uint16_t Port = 0;
-
+    String CongestionControl;
     String Username;
     String Password;
     String EncryptMethod;
@@ -122,6 +125,13 @@ struct Proxy {
     String ShortId;
     String Flow;
     bool FlowShow = false;
+    tribool DisableSni;
+    tribool ReduceRtt;
+    String UdpRelayMode = "native";
+    uint16_t RequestTimeout = 15000;
+    String token;
+    std::vector<String> AlpnList;
+    String PacketEncoding;
 };
 
 #define SS_DEFAULT_GROUP "SSProvider"
@@ -135,5 +145,6 @@ struct Proxy {
 #define XRAY_DEFAULT_GROUP "XRayProvider"
 #define HYSTERIA_DEFAULT_GROUP "HysteriaProvider"
 #define HYSTERIA2_DEFAULT_GROUP "Hysteria2Provider"
+#define TUIC_DEFAULT_GROUP "TuicProvider"
 
 #endif // PROXY_H_INCLUDED

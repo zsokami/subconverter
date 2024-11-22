@@ -13,6 +13,7 @@
 #include "utils/string.h"
 #include "utils/stl_extra.h"
 #include "utils/tribool.h"
+#include <toml.hpp>
 
 struct Settings
 {
@@ -100,7 +101,12 @@ extern Settings global;
 
 int importItems(string_array &target, bool scope_limit = true);
 int loadExternalConfig(std::string &path, ExternalConfig &ext);
-
+template <class T, class... U>
+void find_if_exist(const toml::value &v, const toml::key &k, T& target, U&&... args)
+{
+    if(v.contains(k)) target = toml::find<T>(v, k);
+    if constexpr (sizeof...(args) > 0) find_if_exist(v, std::forward<U>(args)...);
+}
 template <class... Args>
 void parseGroupTimes(const std::string &src, Args... args)
 {

@@ -2,10 +2,12 @@
 
 Utility to convert between various proxy subscription formats.
 
-[![Build Status](https://github.com/asdlokj1qpi23/subconverter/actions/workflows/docker.yml/badge.svg)](https://github.com/asdlokj1qpi23/subconverter/actions)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/asdlokj1qpi23/subconverter.svg)](https://github.com/asdlokj1qpi23/subconverter/tags)
-[![GitHub release](https://img.shields.io/github/release/asdlokj1qpi23/subconverter.svg)](https://github.com/asdlokj1qpi23/subconverter/releases)
-[![GitHub license](https://img.shields.io/github/license/asdlokj1qpi23/subconverter.svg)](https://github.com/tindy2013/subconverter/blob/master/LICENSE)
+original git: https://github.com/asdlokj1qpi23/subconverter
+
+[![Build Status](https://github.com/asdlokj1qpi233/subconverter/actions/workflows/docker.yml/badge.svg)](https://github.com/asdlokj1qpi233/subconverter/actions)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/asdlokj1qpi233/subconverter.svg)](https://github.com/asdlokj1qpi23/subconverter/tags)
+[![GitHub release](https://img.shields.io/github/release/asdlokj1qpi233/subconverter.svg)](https://github.com/asdlokj1qpi233/subconverter/releases)
+[![GitHub license](https://img.shields.io/github/license/asdlokj1qpi233/subconverter.svg)](https://github.com/tindy2013/subconverter/blob/master/LICENSE)
 
 [Docker README](https://github.com/asdlokj1qpi23/subconverter/blob/master/README-docker.md)
 
@@ -59,6 +61,7 @@ services:
 | Surge 2                           |     ✓     |      ✓       | surge&ver=2    |
 | Surge 3                           |     ✓     |      ✓       | surge&ver=3    |
 | Surge 4                           |     ✓     |      ✓       | surge&ver=4    |
+| Surge 5                           |     ✓     |      ✓       | surge&ver=5    |
 | V2Ray                             |     ✓     |      ✓       | v2ray          |
 | Telegram-liked HTTP/Socks 5 links |     ✓     |      ×       | Only as source |
 | Singbox                           |     ✓      |      ✓       | singbox        |
